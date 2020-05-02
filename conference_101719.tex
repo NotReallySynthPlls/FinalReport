@@ -5,6 +5,7 @@
 \usepackage{algorithmic}
 \usepackage{graphicx}
 \usepackage{textcomp}
+\usepackage{svg}
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 %% DO NOT CHANGE
@@ -50,7 +51,7 @@
 
 \markboth{UC Berkeley Proceedings of EE241B, May 2020}{Fritchman \MakeLowercase{\textit{and}} Rahman: \titlestr}
 
-\pubid{~\copyright~2020 University of California, Berkeley}
+% \pubid{~\copyright~2020 University of California, Berkeley}
 
 \begin{document}
 \maketitle
@@ -236,13 +237,7 @@ The top-level PLL architecture is shown in Fig.\ \ref{fig:pll_model}. A bang-ban
 	\label{fig:pll_model}
 \end{figure}
 
-For this prototype design, the $CLK_{DCO}$ was chosen to have an $f_{MAX}$ of 5GHz to match the reported $f_{MAX}$ in \cite{hashimoto2018}. This PLL was designed with a $CLK_{REF}$ frequency of 500MHz and a nominal division ratio $N_{DIV}^{sync}$ of 10. The DCO design consisted of 
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=\columnwidth]{fig_phasemargin}
-	\caption{Top-level implementation of PLL-based scheme from \cite{hashimoto2018}.}
-	\label{fig:phase_margin}
-\end{figure}
+For this prototype design, the $CLK_{DCO}$ was chosen to have an $f_{MAX}$ of 5GHz to match the reported $f_{MAX}$ in \cite{hashimoto2018}. This PLL was designed with a $CLK_{REF}$ frequency of 500MHz and a nominal division ratio $N_{DIV}^{sync}$ of 10. The DCO consisted of custom C2MOS cells as shown in Fig.\ \ref{fig:c2mos}. The top-level DCO schematic, shown in Fig.\ \ref{fig:dco}, was simulated with cell-level RC extractions using Calibre and 60fF of estimated wire capacitances added to each node.
 
 \begin{figure}[h]
 	\centering
@@ -261,9 +256,48 @@ For this prototype design, the $CLK_{DCO}$ was chosen to have an $f_{MAX}$ of 5G
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=\columnwidth]{fig_dco}
+	\includegraphics[width=0.9\columnwidth]{fig_dco}
 	\caption{DCO schematic using custom C2MOS cells.}
 	\label{fig:dco}
+\end{figure}
+
+The design objective was to achieve an octave (2:1) frequency tuning range across corners. For brevity, tuning curves for only the typical corner are shown in Fig.\ \ref{fig:dco_oscctrl} and Fig.\ \ref{fig:dco_droopctrl}. The coarse LSB is designed to have approximately 4x the range of the fine LSB: an external frequency calibration circuit (not shown) would centre the DCO frequency to a fixed coarse code, after which the PLL tunes only the fine code. Such a division between coarse and fine obviates gain calibration and range/resolution tradeoffs between the two DACs while still allowing the PLL sufficient tuning range for lock dynamics. 
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.7\columnwidth]{fig_dco_oscctrl}
+	\caption{DCO frequency vs. coarse + fine DAC code at TT corner.}
+	\label{fig:dco_oscctrl}
+\end{figure}
+
+The smaller droop control DAC was designed to tolerate a 10\% change in frequency at an $f_{MAX}$ of 5GHz. At high $V_{DD}$, this corresponds to roughly a 10\% droop in supply, corresponding to the maximum droop transient shown previously in Fig.\ \ref{fig:droop}. Eight thermometer bits were used for the total droop range, mapping to 60MHz/LSB. Given this DCO gain, the loop filter was tuned with $K_{P}=1$ and $K_{I}=2^{-9}$. An inverse bilinear transform converts the loop filter from the z-domain to the s-domain clocked at $f_{REF}$ of 500MHz, giving a loop phase margin of 79.1 degrees and a unity gain frequency of 810kHz.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.7\columnwidth]{fig_dco_droopctrl}
+	\caption{DCO frequency vs. droop code at TT corner(coarse + fine centred at 5GHz).}
+	\label{fig:dco_droopctrl}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.7\columnwidth]{pnr3.png}
+	\caption{PLL layout in ASAP7 predictive technology (100umx100um). DCO and phase detector are omitted.}
+	\label{fig:layout}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includesvg[width=\columnwidth]{does_svg_work.svg}
+	\caption{Do SVG images work here? We shall see.}
+	\label{fig:svg}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.9\columnwidth]{fig_phasemargin}
+	\caption{Top-level implementation of PLL-based scheme from \cite{hashimoto2018}.}
+	\label{fig:phase_margin}
 \end{figure}
 
 \section{Conclusion}

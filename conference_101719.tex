@@ -91,10 +91,7 @@ To mitigate such failures, adaptive clock generation techniques have emerged in 
 \pubidadjcol
 Transient response of adaptive clock techniques is also vital. The external package routes supplying power to the SoC impact supply voltage settling during changes to on-chip core utilization \cite{hashimoto2018}, as illustrated in Fig.\ \ref{fig:droop}. The range of inductances \& capacitances in this network induces a medley of fast and slow time constants. Resilient adaptive clock generation circuits react quickly to fast ripples in $V_{DD}$ ranging from 50-100MHz \cite{hashimoto2018,wilcox2015} while also tracking slower transient settling at 1MHz and below \cite{hashimoto2018,bowman2016,wilcox2015}.
 
-
-
-
-Several schemes exist to realize supply-induced clock adaptation ranging from directly controlling the clock-synthesizing phase-locked loop (PLL)\cite{ahmad2017,hashimoto2018} to modulating a tunable delay line or phase rotator downstream in an adaptive clock distribution (ACD) network\cite{bowman2016,floyd2017,wilcox2015}. In this work, we survey and contrast the adaptive PLL- and ACD-based mechanisms presented in \cite{hashimoto2018} and \cite{wilcox2015}, respectively. This brief is organized as follows: Section \ref{sec:overview} provides an overview of adaptive clocking schemes and defines the scope of this work; Section \ref{sec:details} discusses the operating principles of mechanisms presented in \cite{hashimoto2018} and \cite{wilcox2015}; Section \ref{sec:comparison} provides a comparison of \cite{hashimoto2018} and \cite{wilcox2015}; and finally Section \ref{sec:conclusion} discusses planned work and concludes this brief.
+Several schemes exist to realize supply-induced clock adaptation ranging from directly controlling the clock-synthesizing phase-locked loop (PLL)\cite{ahmad2017,hashimoto2018} to modulating a tunable delay line or phase rotator downstream in an adaptive clock distribution (ACD) network\cite{bowman2016,floyd2017,wilcox2015,kwak2016self}. In this work, we survey and contrast the adaptive PLL- and ACD-based mechanisms presented in \cite{hashimoto2018} and \cite{wilcox2015}, respectively. This brief is organized as follows: Section \ref{sec:overview} provides an overview of adaptive clocking schemes and defines the scope of this work; Section \ref{sec:details} discusses the operating principles of mechanisms presented in \cite{hashimoto2018} and \cite{wilcox2015}; Section \ref{sec:comparison} provides a comparison of \cite{hashimoto2018} and \cite{wilcox2015}; and finally Section \ref{sec:conclusion} discusses planned work and concludes this brief.
 
 \section{Adaptive Clocking Schemes}
 \label{sec:overview}
@@ -204,6 +201,7 @@ We predict these results will be comparable in ASAP7. The actuation latency in \
 While neither works report measured power and area overhead of the actuation or overall adaptation circuits, the use of a DLL in \cite{wilcox2015} is estimated to cost more. Consider phase mismatch and jitter amplification in the DLL \cite{wilcox2015}. The 40-phase DLL consists of 20 pseudo-differential delay cells, each designed as a pair of cross-coupled inverters with tunable MOS capacitor (MOSCAP) loads. In theory, the $k^{th}$ and $(k+20)^{th}$ phases have a standard deviation of $\sqrt{k} \sigma_{u}$ where $\sigma_{u}$ is one stage's delay variation. The DLL must, at a minimum, ensure phase monotonicity to guarantee glitchless phase rotations. $\sigma_{u}$ is directly correlates to $V_{t}$ and thereby area.
 
 The DLL can also have power implications on the upstream PLL through system jitter specifications. Assume the DLL nears a 2$\times$ tuning range, similar of ring-based PLLs. Each DLL stage must achieve a min/max delay spread of 2$\times$. Fig.\ \ref{fig:dllasap7} shows schematic simulations in ASAP7 of an example delay stage operating at maximum $f_{CLK}=$ 3GHz. To achieve higher delay spread per stage, higher MOSCAP sizing is needed. However, this also decreases the RC bandwidth at each stage, increasing deterministic jitter amplification such as duty-cycle distortion (DCD) as also shown in Fig.\ \ref{fig:dllasap7}. To ensure jitter is not amplified through the DLL, the overall delay chain should target jitter amplification $<$ 1. Otherwise, power must be expended in the upstream PLL to reduce input jitter and DCD.
+
 \vspace{-10pt}
 \begin{figure}[h]
 	\centering
@@ -221,14 +219,27 @@ Design-time complexity of the PLL-based scheme in \cite{hashimoto2018} involves 
 \label{sec:performance}
 The key performance metric reported in both adaptation schemes is reducing voltage/frequency margin. As \cite{hashimoto2018} claims, this is directly proportional to adaptation latency: the shorter the adaptation response time, the closer the SoC can operate to safety limits. Both systems achieve similar results. In terms of $V_{MIN}$, the PLL-based scheme achieves 5\% reduction at 4.65GHz \cite{hashimoto2018} while the ACD-based scheme reports up to 6\% reduction \cite{wilcox2015} at 4GHz. The PLL-based scheme also reports a 7.5\% gain in $f_{MAX}$ to 5GHz if $V_{DD}$ is unchanged \cite{hashimoto2018}. These results require integration of the adaptation system with the complete entire SoC, which may not be feasible in ASAP7 for this project scope: adaptation latency will be used as a proxy.
 
-\vspace{-3pt}
-\section{Implementation in ASAP7 CMOS}
-\label{sec:implementation}
+\subsection{Clock Tree Insertion Delay}
+\label{sec:clktree}
+
+Modern SoCs commonly feature several clock-cycles worth of insertion delay in their clock-distribution networks. When a supply droop occurs, it is therefore likely to affect both the data-path logic and nearby clock-buffers. PLL and ACD-based actuators have different capacities to mitigate these clock-distribution delays. Adaptive PLLs, by definition, apply droop-correction centrally at the point of clock-generation. Clock-distribution delay and its supply dependence is typically outside their control altogether. Response time to a droop is fundamentally limited to the clock-distribution delay. 
+
+ACD circuits, in contrast, can in principle be distributed further along the clock-distribution network. Compact implementations such as that reported in \cite{kwak2016self} could be placed many times per SoC clock-domain, each cleaning up a small sub-block's supply noise. Such distributed sensors may also benefit from the phenomenon of \textit{clock-data compensation} (CDC), originally reported in \cite{wong2006enhancing}. This happy circumstance may enable a reduced range of their actuation. 
+
+However such distributed actuators add two material problems. First, additional synchronization overhead must be incurred at boundaries between each of their clocks. Second and more impactfully, each distributed actuator must either include a local supply-droop detector, or the results of a central supply-monitor must be routed to them. Prior work \cite{kwak2016self} adds such sensors at relatively low cost by using the period of a central PLL as its sensor reference. Unfortunately a distributed form of this sensing tactic is deleteriously affected by the same phenomenon it aims to prevent: supply-induced jitter. A slow-down in PLL frequency or clock-distribution delay appears as an increased reference signal, changing the detector gain at exactly the point its accuracy is required. No prior work surveyed has successfully managed this distributed sensing scheme while mitigating against reference-noise. Absent such a scheme, PLL and ACD-based actuators are equally equipped to manage clock-tree delay changes.
+
+\subsection{not sure whether or where this goes now}
+
 To predict feasibility of the above adaptive clocking systems in FinFET technologies, critical blocks of both the PLL-based \cite{hashimoto2018} and ACD-based \cite{wilcox2015} schemes were implemented in ASAP7 \cite{asap7}. A detailed implementation of the PLL-based system in particular due to the reduced actuation latency and the lack of immediate power, area, and calibration overhead for similar reduction in $V_{MIN}$ reported in planar technologies \cite{hashimoto2018,wilcox2015}.
 
-\vspace{-7pt}
-\subsection{PLL-based adaptive clocking in ASAP7 CMOS}
+\section{Adaptive PLL Design}
+\label{sec:pll-design}
+
+We propose an adaptive, (nearly fully) synthesizable all-digital PLL similar to that presented in \cite{hashimoto2018}. The following sections describe its design at three levels of abstraction. First, system-level behavior as captured in \textit{Simulink}. Second, logic design. Third, its back-end implementation and circuit design in the ASAP7 predictive 7nm technology. 
+
+\subsection{System-Level Design}
 The top-level PLL architecture is shown in Fig.\ \ref{fig:pll_model}. A bang-bang phase detector in the PLL digitizes the phase error between $CLK_{REF}$ and $CLK_{FB}$. A proportional-integral loop filter then tunes the DCO through a 9-bit 1st-order $\Delta\Sigma$ converter, which reduces the DCO quantization noise within the bandwidth of the PLL. A 5-bit 2nd-order $\Delta\Sigma$ single-modulus divider then divides the DCO output clock, $CLK_{PLL}$, to generate $CLK_{FB}$ and closing the loop. The frequency control logic, as discussed previously, tunes the DCO direct control port $\Delta F_{CODE}$ and the feedback division ratio $N_{DIV}^{sync}$.
+
 \vspace{-10pt}
 \begin{figure}[h]
 	\centering
@@ -237,7 +248,48 @@ The top-level PLL architecture is shown in Fig.\ \ref{fig:pll_model}. A bang-ban
 	\label{fig:pll_model}
 \end{figure}
 
-For this prototype design, the $CLK_{DCO}$ was chosen to have an $f_{MAX}$ of 5GHz to match the reported $f_{MAX}$ in \cite{hashimoto2018}. This PLL was designed with a $CLK_{REF}$ frequency of 500MHz and a nominal division ratio $N_{DIV}^{sync}$ of 10. The DCO consisted of custom C2MOS cells as shown in Fig.\ \ref{fig:c2mos}. The top-level DCO schematic, shown in Fig.\ \ref{fig:dco}, was simulated with cell-level RC extractions using Calibre and 60fF of estimated wire capacitances added to each node.
+\vspace{-7pt}
+\subsection{Logical Design}
+
+Save for its oscillator and phase detector, the entirety of the proposed PLL are designed in IEEE1800-standard SystemVerilog. A widely parameterizable phase-detector interface enables a wide range of detector precision, from high-resolution TDCs through single-bit bang-bang detectors. A correspondingly programmable digital loop filter maintains desirable loop dynamics corresponding to each such detector and oscillator. 
+
+In addition to each of the conventional digital PLL sub-blocks (oscillator, detector, filter, and division), it includes a `DroopManager` component with a single primary input, `DroopDetected`, and primary outputs $\Delta F_{CODE}$ and $N_{DIV}^{sync}$. Each droop event incurs two discrete steps: response and recovery. During response, both $\Delta F_{CODE}$ and $N_{DIV}^{sync}$ are held at statically-programmable levels until `DroopDetected` is de-asserted for a parameterizable number of reference cycles. Droop-recovery then proceeds by simultaneously and coherently reducing $\Delta F_{CODE}$ and $N_{DIV}^{sync}$ towards zero. 
+
+Two vital aspects of the `DroopManager` design merit discussion. First, latency from its `DroopDetected` input to application of $\Delta F_{CODE}$ must be minimized, to enable fast response time. To enable sub-cycle latencies, the thermometer-encoded circuit described in \cite{hashimoto2018} is used to generate $\Delta F_{CODE}$. This minimizes response-latency to that of a single AND gate, plus associated wiring delays. The proposed PLL's implementation of this circuit, generated by automatic synthesis and routing, yields a latency of about 40ps, or 1/5 of a 5GHz clock cycle. 
+
+Second, an adaptive PLL must maintain lock, at least sufficiently to continue outputting a valid clock, throughout a supply droop event. The PLL's locking scheme is therefore an integral component of adaptive droop-handling, and must be co-designed with the `DroopManager`. Lock is achieved through a three-step process. First, with its loop configured to respond solely to frequency changes (i.e. in an FLL-like mode), an initial frequency search sets a coarse oscillator code. Each coarse oscillator code is designed for a nominal change of roughly 0.25GHz. Following coarse lock, this code is frozen. Second, a fine-frequency search tunes a fine-grained oscillator code while the PLL remains in frequency-locking mode. Once fine-frequency meets target bounds, the PLL loop is reconfigured to instead track phase error, as measured by its phase detector. 
+
+Such segmented oscillator control schemes are commonly utilized to relax the trade-off between oscillator range and resolution. In the proposed PLL, the oscillator's fine-frequency control range must only be designed to cover its own runtime variations (e.g. due to temperature), plus the roughly 15\% range targeted for droop reduction. 
+
+During a droop event, a combination of the oscillator's linearity requirements and offline calibration data enable the PLL frequency to change to near exactly its target frequency instantaneously. Imprecision and/or quantization in this calibration data, coupled with runtime oscillator shifts (again likely due to temperature) generally cause a small frequency error, which the PLL loop then removes. During such frequency shifts, phase lock is generally lost. Digital PLLs commonly maintain loss-of-lock detection schemes which observe an error variable in the PLL state (e.g. the phase detector output), and declare loss-of-lock when these variables exceed predetermined thresholds. To maintain such protections while enabling lock through droop events, the PLL uses its fine-frequency mode throughout droop response and recovery. A sample logic simulation shown in Fig.\ \ref{fig:brake} shows the PLL initially locking to 4.0GHz, then responding to and recovering from a droop event, temporarily reducing its frequency to 3.5GHz. 
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.7\columnwidth]{brake1.png}
+	\caption{Logic simulation of lock, droop response, and droop recovery from 4.0GHz to 3.5GHz.}
+	\label{fig:brake}
+\end{figure}
+
+\vspace{-7pt}
+\subsection{Circuit Design and Implementation}
+
+The PLL layout, generated by standard EDA tools and the HAMMER \cite{wanghammer} back-end toolchain, is shown in Fig.\ \ref{fig:layout}. Its area is 10k$\mu m^2$ (100 x 100$\mu m$). This figure excludes the custom-designed DCO, which comprises less than 15\% of the overall PLL area. 
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.7\columnwidth]{pnr3.png}
+	\caption{PLL layout in ASAP7 predictive technology (100umx100um). DCO and phase detector are omitted.}
+	\label{fig:layout}
+\end{figure}
+
+Similar to that reported in \cite{hashimoto2018}, the digitally-controlled oscillator is controlled by the relative drive-strength of parallel banks of C2MOS gated-inverters. The top-level DCO schematic, shown in Fig.\ \ref{fig:dco}, was simulated with cell-level RC extractions using Calibre and 60fF of estimated wire capacitances added to each node. For this prototype design, the $CLK_{DCO}$ was chosen to have an $f_{MAX}$ of 5GHz to match the reported $f_{MAX}$ in \cite{hashimoto2018}. This PLL was designed with a $CLK_{REF}$ frequency of 500MHz and a nominal division ratio $N_{DIV}^{sync}$ of 10. The DCO consisted of custom C2MOS cells as shown in Fig.\ \ref{fig:c2mos}. 
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.9\columnwidth]{fig_dco}
+	\caption{DCO schematic using custom C2MOS cells.}
+	\label{fig:dco}
+\end{figure}
 
 \begin{figure}[h]
 	\centering
@@ -254,13 +306,6 @@ For this prototype design, the $CLK_{DCO}$ was chosen to have an $f_{MAX}$ of 5G
 	\label{fig:c2mos}
 \end{figure}
 
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=0.9\columnwidth]{fig_dco}
-	\caption{DCO schematic using custom C2MOS cells.}
-	\label{fig:dco}
-\end{figure}
-
 The design objective was to achieve an octave (2:1) frequency tuning range across corners. For brevity, tuning curves for only the typical corner are shown in Fig.\ \ref{fig:dco_oscctrl} and Fig.\ \ref{fig:dco_droopctrl}. The coarse LSB is designed to have approximately 4x the range of the fine LSB: an external frequency calibration circuit (not shown) would centre the DCO frequency to a fixed coarse code, after which the PLL tunes only the fine code. Such a division between coarse and fine obviates gain calibration and range/resolution tradeoffs between the two DACs while still allowing the PLL sufficient tuning range for lock dynamics. 
 
 \begin{figure}[h]
@@ -270,7 +315,13 @@ The design objective was to achieve an octave (2:1) frequency tuning range acros
 	\label{fig:dco_oscctrl}
 \end{figure}
 
-The smaller droop control DAC was designed to tolerate a 10\% change in frequency at an $f_{MAX}$ of 5GHz. At high $V_{DD}$, this corresponds to roughly a 10\% droop in supply, corresponding to the maximum droop transient shown previously in Fig.\ \ref{fig:droop}. Eight thermometer bits were used for the total droop range, mapping to 60MHz/LSB. Given this DCO gain, the loop filter was tuned with $K_{P}=1$ and $K_{I}=2^{-9}$. An inverse bilinear transform converts the loop filter from the z-domain to the s-domain clocked at $f_{REF}$ of 500MHz, giving a loop phase margin of 79.1 degrees and a unity gain frequency of 810kHz.
+The smaller droop control DAC was designed to tolerate a 10\% change in frequency at an $f_{MAX}$ of 5GHz. At high $V_{DD}$, this corresponds to roughly a 10\% droop in supply, corresponding to the maximum droop transient shown previously in Fig.\ \ref{fig:droop}. Eight thermometer bits were used for the total droop range, mapping to 60MHz/LSB. Given this DCO gain, the loop filter was tuned with $K_{P}=1$ and $K_{I}=2^{-9}$. An inverse bilinear transform converts the loop filter from the z-domain to the s-domain clocked at $f_{REF}$ of 500MHz, giving a loop phase margin of $79.1^{\circ}$ and a unity gain frequency of 810kHz.
+
+\vspace{-7pt}
+\subsection{Simulated Results}
+
+FIXME! Write this up. 
+Or maybe distribute this around the design sections. 
 
 \begin{figure}[h]
 	\centering
@@ -281,30 +332,27 @@ The smaller droop control DAC was designed to tolerate a 10\% change in frequenc
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.7\columnwidth]{pnr3.png}
-	\caption{PLL layout in ASAP7 predictive technology (100umx100um). DCO and phase detector are omitted.}
-	\label{fig:layout}
-\end{figure}
-
-\begin{figure}[h]
-	\centering
-	\includesvg[width=\columnwidth]{does_svg_work.svg}
-	\caption{Do SVG images work here? We shall see.}
-	\label{fig:svg}
-\end{figure}
-
-\begin{figure}[h]
-	\centering
 	\includegraphics[width=0.9\columnwidth]{fig_phasemargin}
 	\caption{Top-level implementation of PLL-based scheme from \cite{hashimoto2018}.}
 	\label{fig:phase_margin}
 \end{figure}
 
+% \begin{figure}[h]
+% 	\centering
+% 	\includesvg[width=\columnwidth]{does_svg_work.svg}
+% 	\caption{Do SVG images work here? We shall see.}
+% 	\label{fig:svg}
+% \end{figure}
+
+\section{Comparison to Prior Work}
+\label{sec:comp-priors}
+
+FIXME: one of them tables
+
 \section{Conclusion}
 \label{sec:conclusion}
 
 This work compares the costs and effectiveness of ACD- and PLL-based adaptive clocking systems \cite{hashimoto2018,wilcox2015}. ACD-based systems exchange design complexity for higher power and area, but both systems achieve less than 2 cycle actuation latency and $V_{MIN}$ reductions by up to 6\%. The PLL-based system is predicted to achieve lower actuation latency and power/area in predictive 7nm CMOS, and initial designs of these systems are planned to evaluate this claim.
-
 
 \bibliographystyle{IEEEtran}
 \begingroup

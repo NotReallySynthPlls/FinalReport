@@ -371,7 +371,7 @@ The actuation time of the droop input control of the DCO to the time the DCO out
 \label{sec:discussion}
 \subsection{Actuation Latency Penalty to $f_{MAX}$}
 \label{sec:actuation_latency}
-As previously discussed, actuation latency is the time delay from a supply droop to the the clock frequency change. This serves as a proxy to evaluate how $f_{MAX}$ is improved by an adaptive clocking technique for an SoC. More precisely, consider the droop example illustrated in Fig.\ \ref{fig:drooptransient}. A supply droop occurs where $V_{DD}$ suddenly decreases from its ideal 1.0V, and the adaptive clocking technique adjusts SoC clock frequecy $f_{CLK}$ after actuation latency $T_{ACT}$. To mitigate timing failure during this latency, the SoC $f_{MAX}$ can only operate assuming $V_{DD,ACT}$, the supply voltage at the time $f_{CLK}$ changes. Actuation latency limits SoC performance.
+As previously discussed, actuation latency is the time delay from a supply droop to the the clock frequency change. This serves as a proxy to evaluate how $f_{MAX}$ is improved by an adaptive clocking technique for an SoC. More precisely, consider the droop example illustrated in Fig.\ \ref{fig:drooplatency}. A supply droop occurs where $V_{DD}$ suddenly decreases from its ideal 1.0V, and the adaptive clocking technique adjusts SoC clock frequecy $f_{CLK}$ after actuation latency $T_{ACT}$. To mitigate timing failure during this latency, the SoC $f_{MAX}$ can only operate assuming $V_{DD,ACT}$, the supply voltage at the time $f_{CLK}$ changes. Actuation latency limits SoC performance.
 
 \vspace{-7pt}
 \begin{figure}[h]
@@ -387,7 +387,7 @@ If the supply voltage initially follows $V_{DD}(t) = -\Delta V_{d}sin(2\pi f_{d}
 \label{eq:fmax_penalty}
 f_{MAX} = (1 - \frac{2\pi\Delta V_{d}f_{d}}{V_{DD}}T_{ACT})f_{MAX,ideal}
 \end{equation} 
-where $f_{MAX,ideal}$ is the maximum SoC clock frequency when $V_{DD}$ is at its maximum voltage. It is apparent from Eq.\ \ref{eq:fmax_penalty} that, to minimize impact on performance, either the actuation latency, droop voltage, or droop frequency must be reduced or the nominal supply voltage must be increased. In ASAP7 for example, the simulated logic \& DCO latencies total $T_{ACT}$ = 40ps + 267ps = 307ps and $V_{DD}$ = 0.7V nominally. To target a 100mV first droop with 50MHz ripple as in \cite{hashimoto2018}, a 1.4\% $f_{MAX}$ penalty is incurred from $f_{MAX,ideal}$. Note that clock tree insertion delay can significantly change this: simulated delays in ASAP7 for a chain of 45 FO4 inverters incur a delay of 951ps, increasing $T_{ACT}$ to 938ps and thus $f_{MAX}$ penalty to 5.6\%.
+where $f_{MAX,ideal}$ is the maximum SoC clock frequency when $V_{DD}$ is at its maximum voltage. It is apparent from Eq.\ \ref{eq:fmax_penalty} that, to minimize impact on performance, either the actuation latency, droop voltage, or droop frequency must be reduced or the nominal supply voltage must be increased. In ASAP7 for example, the simulated logic \& DCO latencies total $T_{ACT}$ = 40ps + 267ps = 307ps and $V_{DD}$ = 0.7V nominally. To target a 100mV first droop with 50MHz ripple as in \cite{hashimoto2018}, a 1.4\% $f_{MAX}$ penalty is incurred from $f_{MAX,ideal}$. Note that clock tree insertion delay can significantly change this: simulated delays in ASAP7 for a chain of 45 FO4 inverters incur a delay of 951ps, increasing $T_{ACT}$ to 1258ps and thus $f_{MAX}$ penalty to 5.6\%.
 
 \vspace{-5pt}
 \subsection{Comparison to Prior Works}

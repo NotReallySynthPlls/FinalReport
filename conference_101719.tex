@@ -387,7 +387,7 @@ If the supply voltage initially follows $V_{DD}(t) = -\Delta V_{d}sin(2\pi f_{d}
 \label{eq:fmax_penalty}
 f_{MAX} = (1 - \frac{2\pi\Delta V_{d}f_{d}}{V_{DD}}T_{ACT})f_{MAX,ideal}
 \end{equation} 
-where $f_{MAX,ideal}$ is the maximum SoC clock frequency when $V_{DD}$ is at its maximum voltage. It is apparent from Eq.\ \ref{eq:fmax_penalty} that, to minimize impact on performance, either the actuation latency, droop voltage, or droop frequency must be reduced or the nominal supply voltage must be increased. In ASAP7 for example, the simulated logic \& DCO latencies total $T_{ACT}$ = 40ps + 267ps = 307ps and $V_{DD}$ = 0.7V nominally. To target a 100mV first droop with 50MHz ripple as in \cite{hashimoto2018}, a 1.4\% $f_{MAX}$ penalty is incurred from $f_{MAX,ideal}$. Note that clock tree insertion delay can significantly change this: simulated delays in ASAP7 for a chain of 45 FO4 inverters incur a delay of 951ps, increasing $T_{ACT}$ to 1258ps and thus $f_{MAX}$ penalty to 5.6\%.
+where $f_{MAX,ideal}$ is the maximum SoC clock frequency when $V_{DD}$ is at its maximum voltage. It is apparent from Eq.\ \ref{eq:fmax_penalty} that, to minimize impact on performance, either the actuation latency, droop voltage, or droop frequency must be reduced or the nominal supply voltage must be increased. In ASAP7 for example, the simulated logic \& DCO latencies total $T_{ACT}$ = 40ps + 171ps = 211ps and $V_{DD}$ = 0.7V nominally. To target a 100mV first droop with 50MHz ripple as in \cite{hashimoto2018}, a 0.95\% $f_{MAX}$ penalty is incurred from $f_{MAX,ideal}$. Note that clock tree insertion delay can significantly change this: simulated delays in ASAP7 for a chain of 45 FO4 inverters incur a delay of 951ps, increasing $T_{ACT}$ to 1162ps and thus $f_{MAX}$ penalty to 5.2\%.
 
 \vspace{-5pt}
 \subsection{Comparison to Prior Works}
@@ -414,7 +414,7 @@ Table \ref{table:comparison} shows a comparison of this feasibility study with p
 	\hline
 	Logic Latency & 588ps & 200ps & 40ps  \\
 	\hline
-	Clock Freq. Latency & 294ps (phase rotator) & Not reported & 267ps (DCO)  \\
+	Clock Freq. Latency & 294ps (phase rotator) & Not reported & 171ps (DCO)  \\
 	\hline
 	Power & Not reported & Not reported & 1.65mW (DCO only) \\
 	\hline
@@ -423,7 +423,7 @@ Table \ref{table:comparison} shows a comparison of this feasibility study with p
 \end{tabularx}
 \end{table}
 
-The prototype implemented here based on \cite{hashimoto2018} suggests that design is indeed feasible in ASAP7: as Table \ref{table:comparison} shows, ASAP7 achieves a $5\times$ lower logic latency in the frequency rebound controller from \cite{hashimoto2018}. However, the reported benefits of low-latency frequency rebound control logic is likely small. The DCO actuation time was 267ps in this study: the logic latency accounted for only 15\% of the total $T_{ACT}$ even before clock tree insertion. While \cite{hashimoto2018} does not report their DCO latency, logic latency plays an increasingly small role compared to other clocking latencies in ASAP7. Future research can incorporate DCO actuation and clock insertion latencies to achieve a lower effective $T_{ACT}$ and a lower $f_{MAX}$ penalty from ideal.
+The prototype implemented here based on \cite{hashimoto2018} suggests that design is indeed feasible in ASAP7: as Table \ref{table:comparison} shows, ASAP7 achieves a $5\times$ lower logic latency in the frequency rebound controller from \cite{hashimoto2018}. However, the reported benefits of low-latency frequency rebound control logic is likely small. The DCO actuation time was 171ps in this study: the logic latency accounted for only 19\% of the total $T_{ACT}$ even before clock tree insertion. While \cite{hashimoto2018} does not report their DCO latency, logic latency plays an increasingly small role compared to other clocking latencies in ASAP7. Future research can incorporate DCO actuation and clock insertion latencies to achieve a lower effective $T_{ACT}$ and a lower $f_{MAX}$ penalty from ideal.
 
 \vspace{-5pt}
 \section{Conclusion}

@@ -15,8 +15,8 @@ submatrix = sortrows(submatrix);
 time = submatrix(:,1)./1E-9;
 freq = submatrix(:,2)./1E9;
 
-idxhi_last  = find(freq > 5.68, 1, 'last');
-idxlo_first = find(freq < 5.24, 1, 'first');
+idxhi_last  = find(freq > 5.82, 1, 'last');
+idxlo_first = find(freq < 5.42, 1, 'first');
 
 timehi_last     = time(idxhi_last);
 timelo_first    = time(idxlo_first);
@@ -30,16 +30,16 @@ plot(time, freq, 'b.', 'MarkerSize', 20); hold on;
 %annotation('textarrow', [timehi_last/5.5 timelo_first/5.5], [5.5/5.7 5.5/5.7]);
 annotation('doublearrow', [2.4/5.5 3.4/5.5], [3.5/5.7 3.5/5.7]);
 txtstr = sprintf('T_{ACT,DCO}=%0.0f ps', 1e3*(timelo_first - timehi_last));
-text(5.15,5.5, txtstr, 'FontName', 'calibri', 'FontSize', 12);
+text(3.35,5.65, txtstr, 'FontName', 'calibri', 'FontSize', 12);
 grid on;
 hold off;
 title('DCO freq. vs time for full-scale droop change');
 xlabel('Time (ns)');
 ylabel('DCO Frequency (GHz)');
-xlim([4.5 5.5]);
-xticks(4.5:0.1:5.5);
-ylim([5.2 5.7]);
-yticks(5.2:0.1:5.7);
+xlim([2.9 3.6]);
+xticks(2.9:0.1:3.8);
+ylim([5.3 5.9]);
+yticks(5.3:0.1:5.9);
 set(gca, 'FontName', 'calibri');
 set(gca, 'FontSize', 12);
 

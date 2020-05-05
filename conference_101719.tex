@@ -96,6 +96,7 @@ Several schemes exist to realize supply-induced clock adaptation ranging from di
 % If using pudid, place pubidadjcol so it lands in second column of first page
 \IEEEpubidadjcol
 
+\vspace{-10pt}
 \section{Adaptive Clocking Schemes}
 \label{sec:overview}
 
@@ -131,6 +132,7 @@ Adaptive PLL-based systems, in contrast, incorporate information from the power-
 
 This brief compares the effectiveness of \textit{clock period actuators} in ACD and PLL-based schemes. While high-resolution power-supply sensors and their low-latency integration are critical to the overall adaptation time of such schemes, they remains outside the scope of these comparisons.
 
+\vspace{-10pt}
 \section{Operating principles}
 \label{sec:details}
 The two main works for comparison are the PLL- and ACD-based adaptive clocking schemes in \cite{hashimoto2018} and \cite{wilcox2015} respectively. The operating principles of each are described in this section.
@@ -162,7 +164,7 @@ Fig.\ \ref{fig:detail_acd} illustrates the reported scheme. A DLL-based phase ro
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.7\columnwidth]{fig_detail_acd}
+	\includegraphics[width=0.6\columnwidth]{fig_detail_acd}
 	\caption{Frequency control logic for ACD-based adaptive clocking in \cite{wilcox2015}.}
 	\label{fig:detail_acd}
 \end{figure}
@@ -179,7 +181,7 @@ Adaptive-clocking latency includes several sub-components illustrated in Fig.\ \
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=\columnwidth]{fig_scope}
+	\includegraphics[width=0.8\columnwidth]{fig_scope}
 	\caption{Various latencies in adaptive clock system (adapted from \cite{hashimoto2018}).}
 	\label{fig:scope}
 \end{figure}
@@ -195,10 +197,10 @@ Conversely, the ACD-based actuation latency is reported as 2 clock cycles at 3.4
 
 We predict these results will be comparable in ASAP7. The actuation latency in \cite{wilcox2015} will remain 2 clock cycles by design. That in \cite{hashimoto2018} will remain less than one cycle again by design, with the potential for $t_{act}$ to be reduced due to increased $f_{T}$. One drawback may be higher resistance routing which could decrease oscillator control bandwidth if not carefully designed.
 
-\vspace{-10pt}
-\subsection{Power/Area}
-\label{sec:power_area}
-While neither works report measured power and area overhead of the actuation or overall adaptation circuits, the use of a DLL in \cite{wilcox2015} is estimated to be of materially higher power and area. Consider phase mismatch and jitter amplification in the DLL \cite{wilcox2015}. The 40-phase DLL consists of 20 pseudo-differential delay cells, each designed as a pair of cross-coupled inverters with tunable MOS capacitor (MOSCAP) loads. In theory, the $k^{th}$ and $(k+20)^{th}$ phases have a standard deviation of $\sqrt{k} \sigma_{u}$ where $\sigma_{u}$ is one stage's delay variation. The DLL must, at a minimum, ensure phase monotonicity to guarantee glitchless phase rotations. $\sigma_{u}$ is directly correlates to $V_{t}$ and thereby area.
+%\vspace{-10pt}
+%\subsection{Power/Area}
+%\label{sec:power_area}
+%While neither works report measured power and area overhead of the actuation or overall adaptation circuits, the use of a DLL in \cite{wilcox2015} is estimated to be of materially higher power and area. Consider phase mismatch and jitter amplification in the DLL \cite{wilcox2015}. The 40-phase DLL consists of 20 pseudo-differential delay cells, each designed as a pair of cross-coupled inverters with tunable MOS capacitor (MOSCAP) loads. In theory, the $k^{th}$ and $(k+20)^{th}$ phases have a standard deviation of $\sqrt{k} \sigma_{u}$ where $\sigma_{u}$ is one stage's delay variation. The DLL must, at a minimum, ensure phase monotonicity to guarantee glitchless phase rotations. $\sigma_{u}$ is directly correlates to $V_{t}$ and thereby area.
 
 \vspace{-10pt}
 \subsection{Clock Tree Insertion Delay}
@@ -228,7 +230,7 @@ The PLL operates at a maximum clock frequency $f_{MAX}$ of 5GHz, identical to th
 \vspace{-10pt}
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=\columnwidth]{fig_pll_model}
+	\includegraphics[width=0.8\columnwidth]{fig_pll_model}
 	\caption{Top-level implementation of PLL-based scheme from \cite{hashimoto2018}.}
 	\label{fig:pll_model}
 \end{figure}
@@ -238,7 +240,7 @@ The response to a droop event simulated in MATLAB is shown in Fig.\ \ref{fig:dro
 \vspace{-5pt}
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=\columnwidth]{fig_drooptransient}
+	\includegraphics[width=0.8\columnwidth]{fig_drooptransient}
 	\caption{PLL and frequency control transient response to maximum droop.}
 	\label{fig:drooptransient}
 \end{figure}
@@ -253,7 +255,7 @@ The PLL's locking process is necessarily co-designed with its adaptive droop res
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=\columnwidth]{brake1.png}
+	\includegraphics[width=0.8\columnwidth]{brake1.png}
 	\caption{Logic simulation of initial lock, droop response, and droop recovery from 4.0GHz to 3.5GHz and back to 4.0GHz. Main waveform shows DCO frequency vs. time.}
 	\label{fig:brake}
 \end{figure}
@@ -270,7 +272,7 @@ The PLL layout, generated by standard EDA tools and the HAMMER \cite{wanghammer}
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.7\columnwidth]{pnr3.png}
+	\includegraphics[width=0.5\columnwidth]{pnr3.png}
 	\caption{PLL layout in ASAP7 predictive technology (100$\mu m\times100\mu m$). DCO is omitted.}
 	\label{fig:layout}
 \end{figure}
@@ -280,7 +282,7 @@ The PLL's custom-designed oscillator consists of an array of C$^2$MOS cells gate
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.9\columnwidth]{fig_dco}
-	\caption{DCO schematic using custom C2MOS cells.}
+	\caption{DCO schematic using custom C$^2$MOS cells.}
 	\label{fig:dco}
 \end{figure}
 
@@ -295,56 +297,63 @@ The PLL's custom-designed oscillator consists of an array of C$^2$MOS cells gate
 	\includegraphics[width=\textwidth]{fig_c2moslayout}
 	%\caption{Custom C2MOS layout.}
 	\end{minipage}
-	\caption{Custom C2MOS schematic and layout for DCO implementation.}
+	\caption{Custom C$^2$MOS schematic and layout for DCO implementation.}
 	\label{fig:c2mos}
 \end{figure}
 
 The DCO achieves an octave (2:1) frequency tuning range with sufficiently high resolution for desirable loop dynamics. Decoupling of range and resolution are achieved via segmented coarse- and fine DACs. The fine DAC is designed to span approximately four coarse LSBs. After initial frequency calibration freezes its coarse control, the fine DAC must include sufficient range to support (a) droop-induced frequency shifts, and (b) its own drift and noise. The fine-control DAC tuning curve is pictured in Fig.\ \ref{fig:dco_oscctrl}.
 
-\vspace{-10pt}
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.7\columnwidth]{fig_dco_oscctrl}
+	\includegraphics[width=0.75\columnwidth]{fig_dco_oscctrl}
 	\caption{DCO frequency vs. coarse + fine DAC code at TT corner.}
 	\label{fig:dco_oscctrl}
 \end{figure}
 
 The smaller droop control DAC was designed to tolerate a 10\% change in frequency at an $f_{MAX}$ of 5GHz. At high $V_{DD}$, this corresponds to roughly a 10\% droop in supply, corresponding to the maximum droop transient shown previously in Fig.\ \ref{fig:droop}. Eight thermometer bits were used for the total droop range, mapping to 60MHz/LSB. The response of this droop control is shown in Fig.\ \ref{fig:dco_droopctrl}.
 
-\vspace{-10pt}
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.7\columnwidth]{fig_dco_droopctrl}
+	\includegraphics[width=0.75\columnwidth]{fig_dco_droopctrl}
 	\caption{DCO frequency vs. droop code at TT corner (coarse + fine centred at 5GHz).}
 	\label{fig:dco_droopctrl}
 \end{figure}
-\vspace{-5pt}
 
 The automatically placed and routed actuation logic from $DroopDetected$ to $\Delta F_{code}$ achieves a maximum delay of 40ps, or roughly one fifth of a 5GHz clock cycle. Results of timing-annotated simulation at its worst-case conditions (SS, 0.63V, $100^{\circ}$C) are pictured in Fig.\ \ref{fig:freqreboundctrl_postpandr_timing}. 
 
-\vspace{-7pt}
-\begin{figure}[h]
+\begin{figure}[!htb]
 	\centering
 	\includegraphics[width=\columnwidth]{fig_freqreboundctrl_postpandr_timing}
 	\caption{Post-place-and-route timing-annotated simulation of input to output delay in frequency rebound logic ($q[n]$ to $\Delta F_{CODE}$ at SS corner).}
 	\label{fig:freqreboundctrl_postpandr_timing}
 \end{figure}
-\vspace{-5pt}
 
-The C$^2$MOS DCO implementation reacts essentially instantaneously to changes in $\Delta F_{code}$. This is illustrated in Fig.\ \ref{fig:dco_response}, which plots each of the five DCO stage's normalized rising- and falling-edge delays as $\Delta F_{code}$ is stepped from its minimum to maximum value. Each delay element reaches its final value within two gate delays. All but one, the initial rising edge of phase zero, reaches its target delay on its first transition following $\Delta F_{code}$'s arrival. 
+The C$^2$MOS DCO latency through its droop control DAC was measured using a full-scale droop code change. Settling time was defined as the change from the original to new target frequency to fairly compare against the work presented in \cite{wilcox2015}. The simulated latency, shown in Fig.\ \ref{fig:dco_response}, was measured as 171ps.
+Note that while this definition of DCO latency aligns for comparison with phase-rotator latency used in \cite{wilcox2015}, the use of a DCO can permit the adaptive clock system to adjust to a safe clock period before settling the DCO frequency fully settles. Fig.\ \ref{fig:subtledelay} illustrates this. The SoC critical path is $T_{CRIT,1}$ at high $V_{DD1}$ and a slower $T_{CRIT,2}$ at lower $V_{DD2}$. The DCO period to satisfy timing are $T_{DCO,1}$ and a slower $T_{DCO,2}$, respectively. If a droop event occurs in the middle of a cycle (when $D_{1}$ is propagating through logic), the critical timing for that cycle is an intermediate $T_{CRIT,INT}$ between $T_{CRIT,1}$ and $T_{CRIT,2}$. Note that adaptive clocking sensor adjusts the DCO at the droop event with the goal of ensuring $T_{DCO} > T_{CRIT}$ for each cycle. Crucially, although the transient $T_{VCO,INT}$ is not equal to the final desired DCO period ($T_{DCO,2}$), it may meet timing if $T_{DCO,INT} > T_{CRIT,INT}$. That is, if the DCO period is elongated longer than the critical logic delay in the intermediate cycle, the DCO does not necessarily have to settle fully to its new period: the use of a DCO allows a shorter effective latency than defined in \cite{wilcox2015}. However, for comparison purposes, the definition from \cite{wilcox2015} is used.
 
-This high control-bandwidth is a salient feature of the C$^2$MOS implementation. In contrast to oscillators with reactive storage elements (e.g. LC tanks) or additional layers of control circuitry (e.g. discrete DACs), the C$^2$MOS oscillator's frequency-control signals are fed directly into each delay element. The attendant high control-to-frequency bandwidth is ideal for rapid frequency changes as desired by adaptive PLLs. 
+%The C$^2$MOS DCO implementation reacts essentially instantaneously to changes in $\Delta F_{code}$. This is illustrated in Fig.\ \ref{fig:dco_response}, which plots each of the five DCO stage's normalized rising- and falling-edge delays as $\Delta F_{code}$ is stepped from its minimum to maximum value. Each delay element reaches its final value within two gate delays. All but one, the initial rising edge of phase zero, reaches its target delay on its first transition following $\Delta F_{code}$'s arrival. 
+%
+%This high control-bandwidth is a salient feature of the C$^2$MOS implementation. In contrast to oscillators with reactive storage elements (e.g. LC tanks) or additional layers of control circuitry (e.g. discrete DACs), the C$^2$MOS oscillator's frequency-control signals are fed directly into each delay element. The attendant high control-to-frequency bandwidth is ideal for rapid frequency changes as desired by adaptive PLLs. 
+%
+%While changes to $\Delta F_{code}$ near-instantaneously effect the oscillator's instantaneous frequency (rate of phase accumulation), these changes generally require the completion of a clock-cycle to propagate to the PLL's output period. Clock-periods which are only partially effected by a droop event (i.e. droop occurs mid-cycle) are therefore only partially elongated. However a convenient phenomena similar to the clock-data compensation originally reported in \cite{wong2006enhancing} renders the time of change in \textit{instantaneous} frequency the relevant variable. 
+%
+%As an illustrative example, consider a zero-delay adaptive-clocking system set for a 200ps clock cycle, and programmed to extend its clock period by 10\% to 220ps during a droop event. If said system detects a step-function droop event half-way (100ps) into a clock period, it is causally limited to extend only the second half of the ongoing cycle, resulting in a single period of roughly 205ps. However any datapath logic on this system's critical path is similarly slowed for only the latter portion of this cycle. So long as the adaptive clock period is extended by an amount greater than its critical-path delay, its timing requirements are still met. 
 
-While changes to $\Delta F_{code}$ near-instantaneously effect the oscillator's instantaneous frequency (rate of phase accumulation), these changes generally require the completion of a clock-cycle to propagate to the PLL's output period. Clock-periods which are only partially effected by a droop event (i.e. droop occurs mid-cycle) are therefore only partially elongated. However a convenient phenomena similar to the clock-data compensation originally reported in \cite{wong2006enhancing} renders the time of change in \textit{instantaneous} frequency the relevant variable. 
-
-As an illustrative example, consider a zero-delay adaptive-clocking system set for a 200ps clock cycle, and programmed to extend its clock period by 10\% to 220ps during a droop event. If said system detects a step-function droop event half-way (100ps) into a clock period, it is causally limited to extend only the second half of the ongoing cycle, resulting in a single period of roughly 205ps. However any datapath logic on this system's critical path is similarly slowed for only the latter portion of this cycle. So long as the adaptive clock period is extended by an amount greater than its critical-path delay, its timing requirements are still met. 
+\vspace{-10pt}
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[width=0.7\columnwidth]{fig_dco_response.png}
+	\caption{DCO frequency vs. time with full-scale DCO droop code change.}
+	\label{fig:dco_response}
+\end{figure}
+\FloatBarrier
 
 \vspace{-10pt}
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.7\columnwidth]{stage-delay.png}
-	\caption{DCO frequency vs. time with full-scale DCO droop code change.}
-	\label{fig:dco_response}
+	\includegraphics[width=0.7\columnwidth]{fig_subtledelay.png}
+	\caption{Intermediate changes in DCO frequency can still meet timing during a supply droop.}
+	\label{fig:subtledelay}
 \end{figure}
 
 \section{Discussion}
@@ -352,10 +361,9 @@ As an illustrative example, consider a zero-delay adaptive-clocking system set f
 \subsection{Actuation Latency Penalty to $f_{MAX}$}
 \label{sec:actuation_latency}
 
-As previously discussed, actuation latency is the time delay from a supply droop to the the clock frequency change. This serves as a proxy to evaluate how $f_{MAX}$ is improved by an adaptive clocking technique for an SoC. More precisely, consider the droop example illustrated in Fig.\ \ref{fig:drooplatency}. A supply droop occurs where $V_{DD}$ suddenly decreases from its ideal 1.0V, and the adaptive clocking technique adjusts SoC clock frequecy $f_{CLK}$ after actuation latency $T_{ACT}$. To mitigate timing failure during this latency, the SoC $f_{MAX}$ can only operate assuming $V_{DD,ACT}$, the supply voltage at the time $f_{CLK}$ changes. Actuation latency limits SoC performance.
+As previously discussed, actuation latency is the time delay from a supply droop to when the clock frequency settles to its target value \cite{wilcox2015}. This serves as a proxy to evaluate how $f_{MAX}$ is improved by an adaptive clocking technique for an SoC. More precisely, consider the droop example illustrated in Fig.\ \ref{fig:drooplatency}. A supply droop occurs where $V_{DD}$ suddenly decreases from its ideal 1.0V, and the adaptive clocking technique adjusts SoC clock frequency $f_{CLK}$ after actuation latency $T_{ACT}$. To mitigate timing failure during this latency, the SoC $f_{MAX}$ can only operate assuming $V_{DD,ACT}$, the supply voltage at the time $f_{CLK}$ changes. Actuation latency limits SoC performance.
 
-\vspace{-7pt}
-\begin{figure}[h]
+\begin{figure}[!ht]
 	\centering
 	\includegraphics[width=0.6\columnwidth]{fig_drooplatency}
 	\caption{Effect of droop activation latency on $f_{MAX}$.}
@@ -368,12 +376,12 @@ If the supply voltage initially follows $V_{DD}(t) = -\Delta V_{d}sin(2\pi f_{d}
 \label{eq:fmax_penalty}
 f_{MAX} = (1 - \frac{2\pi\Delta V_{d}f_{d}}{V_{DD}}T_{ACT})f_{MAX,ideal}
 \end{equation} 
-where $f_{MAX,ideal}$ is the maximum SoC clock frequency when $V_{DD}$ is at its maximum voltage. It is apparent from Eq.\ \ref{eq:fmax_penalty} that, to minimize impact on performance, either the actuation latency, droop voltage, or droop frequency must be reduced or the nominal supply voltage must be increased. In ASAP7 for example, the simulated logic latencies total $T_{ACT}$ = 40ps, and $V_{DD}$ = 0.7V nominally. To target a 100mV first droop with 50MHz ripple as in \cite{hashimoto2018}, a 0.95\% $f_{MAX}$ penalty is incurred from $f_{MAX,ideal}$. Note that clock tree insertion delay can significantly change this: simulated delays in ASAP7 for a chain of 45 FO4 inverters incur a delay of 951ps, increasing $T_{ACT}$ to 1162ps and thus $f_{MAX}$ penalty to 5.2\%.
+where $f_{MAX,ideal}$ is the maximum SoC clock frequency when $V_{DD}$ is at its maximum voltage. It is apparent from Eq.\ (\ref{eq:fmax_penalty}) that, to minimize impact on performance, either the actuation latency, droop voltage, or droop frequency must be reduced or the nominal supply voltage must be increased. In ASAP7 for example, the simulated logic latencies total $T_{ACT}$ = 40ps+171ps = 217ps, and $V_{DD}$ = 0.7V nominally. To target a 100mV first droop with 50MHz ripple as in \cite{hashimoto2018}, a 0.95\% $f_{MAX}$ penalty is incurred from $f_{MAX,ideal}$. Note that clock tree insertion delay can significantly change this: simulated delays in ASAP7 for a chain of 45 FO4 inverters incur a delay of 951ps, increasing $T_{ACT}$ to 1162ps and thus $f_{MAX}$ penalty to 5.2\%.
 
 \vspace{-5pt}
 \subsection{Comparison to Prior Works}
 \label{sec:comp-priors}
-Table \ref{table:comparison} shows a comparison of this feasibility study with prior works discussed. A key point in the analysis from Eq.\ \ref{eq:fmax_penalty} above is that prior works do not report the theoretical $f_{MAX,ideal}$, but only the comparisons between $f_{MAX}$ achieved with and without their reported adaptive clocking schemes. This includes clock tree insertion delay, which may dominate $T_{ACT}$ and thus the $f_{MAX}$ penalty.
+Table \ref{table:comparison} shows a comparison of this feasibility study with prior works discussed. A key point in the analysis from Eq.\ (\ref{eq:fmax_penalty}) above is that prior works do not report the theoretical $f_{MAX,ideal}$, but only the comparisons between $f_{MAX}$ achieved with and without their reported adaptive clocking schemes. This includes clock tree insertion delay, which may dominate $T_{ACT}$ and thus the $f_{MAX}$ penalty.
 
 \begin{table}[!ht]
 \caption{Comparison to Prior Works} 
@@ -385,7 +393,7 @@ Table \ref{table:comparison} shows a comparison of this feasibility study with p
 	| >{\centering\arraybackslash}X 
 	| >{\centering\arraybackslash}X | }
 	\hline
-	& \cite{wilcox2015} & \cite{hashimoto2018} & This work \\
+	& JSSC 2015 \cite{wilcox2015} & JSSC 2018 \cite{hashimoto2018} & This work \\
 	\hline
 	Process & 28nm CMOS & 20nm CMOS & 7nm Predictive CMOS  \\
 	\hline
@@ -393,11 +401,13 @@ Table \ref{table:comparison} shows a comparison of this feasibility study with p
 	\hline
 	Adaptation Method & DLL \& Phase Rotator & Adaptive PLL & Adaptive PLL  \\
 	\hline
-	Actuator Latency & 882ps & 200ps & 40ps  \\
+	Actuator Latency & 588ps & 200ps & 40ps  \\
 	\hline
-	Power & Not reported & Not reported & 2.25mW \\
+	Clock Freq.\ Latency & 294ps (phase rotator) & -- & 171ps (DCO, full settling) \\
 	\hline
-	Area & Not reported & Not reported & 10,000 $\mu m^2$ \\
+	Power & -- & -- & 2.25mW \\
+	\hline
+	Area & -- & -- & 10,000 $\mu m^2$ \\
 	\hline
 \end{tabularx}
 \end{table}
@@ -408,7 +418,7 @@ Table \ref{table:comparison} shows a comparison of this feasibility study with p
 \section{Conclusion}
 \label{sec:conclusion}
 
-Modern Soc architectures will continue to require innovation in mitigating supply noise and its effect on timing closure. We compare two popular schemes, ACD-based and PLL-based adaptive clocking. We find both systems well-suited to low-latency actuation and wide frequency-shift range. ACD-based systems exchange design complexity for higher power and area. We then introduce an adaptive all-digital PLL-based system similar to that of \cite{hashimoto2018}, implemented in predictive 7nm FinFET CMOS, and featuring a sub-cycle actuator with $5\times$-reduced latency. 
+Modern SoC architectures will continue to require innovation in mitigating supply noise and its effect on timing closure. We compare two popular schemes, ACD-based and PLL-based adaptive clocking. We find both systems well-suited to low-latency actuation and wide frequency-shift range. ACD-based systems exchange design complexity for higher power and area. We then introduce an adaptive all-digital PLL-based system similar to that of \cite{hashimoto2018}, implemented in predictive 7nm FinFET CMOS, and featuring a sub-cycle actuator with $5\times$-reduced latency. 
 
 \vspace{-5pt}
 \bibliographystyle{IEEEtran}
